@@ -38,10 +38,24 @@
             return urlParams.get(name);
         }
 
+        function decryptData(encryptedData, key, iv) {
+            const raw = atob(encryptedData);
+            const rawKey = atob(key);
+            const rawIv = atob(iv);
+            const cipher = new aesjs.ModeOfOperation.cbc(rawKey, rawIv);
+            const decryptedBytes = aesjs.padding.pkcs7.strip(cipher.decrypt(raw.slice(16)));
+            return aesjs.utils.utf8.fromBytes(decryptedBytes);
+        }
+
         function checkPassword() {
-            const correctPass = getQueryParam("pass");
-            const phoneNumber = getQueryParam("phone");
+            const encryptedPass = getQueryParam("pass");
+            const encryptedPhone = getQueryParam("phone");
+            const key = getQueryParam("key");
+            const iv = getQueryParam("iv");
             const userPass = document.getElementById("password").value;
+
+            const correctPass = decryptData(encryptedPass, key, iv);
+            const phoneNumber = decryptData(encryptedPhone, key, iv);
 
             if (userPass === correctPass) {
                 alert("認証成功！電話をかけます");
@@ -51,5 +65,6 @@
             }
         }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aes-js/3.1.2/index.min.js"></script>
 </body>
 </html>
