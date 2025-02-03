@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>電話認証</title>
+</head>
+<body>
+    <h2>パスワードを入力してください</h2>
+    <input type="password" id="password" placeholder="パスワードを入力">
+    <button onclick="checkPassword()">発信する</button>
+
+    <script>
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function checkPassword() {
+            const correctPass = getQueryParam("pass");
+            const phoneNumber = getQueryParam("phone");
+            const userPass = document.getElementById("password").value;
+
+            if (userPass === correctPass) {
+                alert("認証成功！電話をかけます");
+                window.location.href = `tel:${phoneNumber}`;
+            } else {
+                alert("パスワードが間違っています");
+            }
+        }
+    </script>
+</body>
+</html>
